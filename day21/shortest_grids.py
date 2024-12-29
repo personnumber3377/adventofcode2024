@@ -8,7 +8,7 @@ from constants import *
 def is_valid(x, y, grid, visited):
     """Check if a position is valid for movement."""
     rows, cols = len(grid), len(grid[0])
-    return 0 <= x < rows and 0 <= y < cols and grid[x][y] == 0 and (x, y) not in visited
+    return 0 <= y < rows and 0 <= x < cols and grid[y][x] == 0 and (x, y) not in visited
 
 def bfs_shortest_paths(grid, start, end):
     """Find all shortest paths from start to end on a 2D grid."""
@@ -81,6 +81,9 @@ def generate_shortest_paths_numpad():
                         continue
                     paths = [path_to_string(x) for x in bfs_shortest_paths(grid, start, end)]
                     assert (x1,y1,x2,y2) not in output
+                    #if x1 == 2 and y1 == 3 and x2 == 1 and y2 == 3:
+                    #    print("FUUCK"*100)
+                    #    print("Here is the bullshit: "+str(paths))
                     output[(x1,y1,x2,y2)] = paths # Just add it like this?????
 
     return output
@@ -111,6 +114,25 @@ def generate_shortest_paths_arrowpad():
 
     return output
 
+
+'''
+
+def generate_shortest_paths_arrowpad_keys():
+    
+    out = dict() # Generate the dictionary
+
+    all_keys = ARROWPAD.keys() # Get the keys.
+    for start_key in all_keys:
+        for end_key in all_keys:
+            if start_key == end_key:
+                continue
+            start_pos = ARROWPAD[start_key]
+            end_pos = ARROWPAD[end_key]
+            # res[(start[0], start[1], end[0], end[1])]
+            out[(start_key, end_key)] = SHORTEST_PATHS_ARROWPAD[(start_pos[0], start_pos[1], end_pos[0], end_pos[1])]
+    return out
+
+'''
 
 
 # Example Usage

@@ -5,7 +5,6 @@
 
 from shortest_grids import *
 from constants import *
-import itertools
 
 SHORTEST_PATHS_NUMPAD = generate_shortest_paths_numpad()
 SHORTEST_PATHS_ARROWPAD = generate_shortest_paths_arrowpad()
@@ -70,8 +69,8 @@ def check_valid_numpad(x,y):
 +---+---+---+
 | 1 | 2 | 3 |
 +---+---+---+
-	 | 0 | A |
-	 +---+---+
+    | 0 | A |
+    +---+---+
 
 '''
 
@@ -79,7 +78,7 @@ def check_valid_numpad(x,y):
 # SHORTEST_PATHS_ARROWPAD_INPUT_KEYS
 # These are basically the shortest ways to input a character to the second arrowpad from the first. The key is the wanted character and the value is the input into the original arrowpad:
 
-SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =	{"<": "<v<A",
+SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =   {"<": "<v<A",
 										"^": "<A",
 										"v": "<vA",
 										">": "vA"}
@@ -87,8 +86,8 @@ SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =	{"<": "<v<A",
 
 '''
 
-	 +---+---+
-	 | ^ | A |
+    +---+---+
+    | ^ | A |
 +---+---+---+
 | < | v | > |
 +---+---+---+
@@ -117,53 +116,6 @@ def keypad_forward(actions, init_pos): # Init pos is the tuple
 				case ">":
 					x += 1
 
-'''
-
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		# Determine if 'A' should be used as the join character
-		if ('A' not in s and 
-				(i == 0 or not strings[i-1].endswith('A')) and 
-				(i == len(strings)-1 or not strings[i+1].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-'''
-
-
-
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		if ((not i == 0 and not strings[i].endswith('A')) and (not strings[i].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-
-'''
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		# Determine if 'A' should be used as the join character
-		# if ('A' in s and 
-		if ((i == 0 or not strings[i-1].endswith('A')) and 
-				(i == len(strings)-1 or not strings[i+1].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-'''
-
-
-# Example usage
-#strings = ['foo', 'barA', 'baz', 'Aqux', 'zooA']
-#joined = conditional_join(strings)
-#print(joined)
-
-
 def get_shortest_path(code) -> str: # Generates the shortest path which types this code.
 	cache = dict() # This is to memoieze the shortest shit such that we do not need to compute it every time.
 	# Initialize the positions of every "pointer"
@@ -176,12 +128,6 @@ def get_shortest_path(code) -> str: # Generates the shortest path which types th
 
 	cur_shortest_path = "" # Current shortest path
 	cur_shortest_path_len = 10**9 # Some very big number such that we initialize on the first loop iteration.
-	code = "A"+code # We need to start from "A", therefore do this...
-	
-	# This variable stores all of the things...
-
-	numpad_path_stuff = []
-
 	for i in range(len(code)-1):
 		start_key = code[i]
 		end_key = code[i+1]
@@ -191,67 +137,44 @@ def get_shortest_path(code) -> str: # Generates the shortest path which types th
 			end_key = int(end_key)
 		print("from : to == "+str(start_key)+", "+str(end_key))
 		# First generate all of the shortest paths in the initial keypad.
-		assert (start_key, end_key) in SHORTEST_PATHS_NUMPAD_KEYS
 		numpad_paths = SHORTEST_PATHS_NUMPAD_KEYS[(start_key, end_key)]
-		numpad_path_stuff.append(numpad_paths)
-		print("numpad_paths == "+str(numpad_paths))
-
-	print(numpad_path_stuff)
-	# Now numpad_path_stuff has all of the possible path stuffs
-	# Now iterate over all of the shit.
-	print("Here are all of the paths on the keypad:")
-	for combination in itertools.product(*numpad_path_stuff):
-		# Join the elements of each combination into a string
-		path = 'A'.join(combination)
-		#print("Path: "+str(path))
-
-		# So now we need to find out the thing...
-
-		# path_one_layer_up = "A".join(list(path))
-		path_one_layer_up = "".join(list(path))
-
-		path_one_layer_up = "A"+path_one_layer_up+"A" # This must be done because the very first character is "A"
-		#print("Processing this path: "+str(path_one_layer_up))
-
-		# Ok, so now the thing is done bullshit.
-
-		# Now just run the same algorithm as above but for the new shit...
-		arrowpad_paths_stuff = []
-		for j in range(len(path_one_layer_up)-1):
-
-			start_key = path_one_layer_up[j]
-			end_key = path_one_layer_up[j+1]
-
-			if start_key == end_key:
-				if start_key != "A":
-
-					# arrowpad_paths_stuff.append(["A"])
-					arrowpad_paths_stuff.append(["A"])
+		# Now iterate over those paths...
+		for path1 in numpad_paths:
+			print("path1 == "+str(path1))
+			# Now the path variable contains the suspected shortest path in the original keypad.
+			# Now we need to iterate over the other bullshit paths...
+			# The arrowpad shit is in the SHORTEST_PATHS_ARROWPAD_KEYS
+			# So now just do the bullshit again but with the other bullshit maybe???
+			for j in range(len(path1)-1): # Basically do the same algorithm as above but "one layer down"
+				start2_key = path1[j]
+				end2_key = path1[j+1]
+				if start2_key == end2_key:
 					continue
-				else:
-					continue
+				print("(start2_key, end2_key) == "+str((start2_key, end2_key)))
 
-			#if start_key != "A":
-			#	start_key = int(start_key)
-			#if end_key != "A":
-			#	end_key = int(end_key)
-			#print("from : to == "+str(start_key)+", "+str(end_key))
-			# First generate all of the shortest paths in the initial keypad.
-			assert (start_key, end_key) in SHORTEST_PATHS_ARROWPAD_KEYS
-			arrowpad_paths = SHORTEST_PATHS_ARROWPAD_KEYS[(start_key, end_key)]
-			arrowpad_paths_stuff.append(arrowpad_paths)
-			#print("arrowpad_paths == "+str(arrowpad_paths))
+				assert (start2_key, end2_key) in SHORTEST_PATHS_ARROWPAD_KEYS
+				arrowpad_paths = SHORTEST_PATHS_ARROWPAD_KEYS[(start2_key, end2_key)] # Get the shortest shit...
+				for path2 in arrowpad_paths:
+					print("path2 == "+str(path2))
+					for k in range(len(path2)):
+						start3_key = path2[k]
+						#end3_key = path2[i+1]
+						print("FUCKFUCKFCUK")
+						#if start3_key == end3_key:
+						#	continue
+						print("FUCKFUCKFCUK")
+						#assert (start3_key, end3_key) in SHORTEST_PATHS_ARROWPAD_INPUT_KEYS
+						arrowpad_paths2 = SHORTEST_PATHS_ARROWPAD_INPUT_KEYS[start3_key] # Get the shortest shit...
+						for path3 in arrowpad_paths2:
+							# Ok, so now the path is path1 in the numpad path2 in the first arrowpad and path3 in the second arrowpad.
+							# The total path is therefore path1+path2+path3
+							total_path = path1+path2+path3
+							print("Here is the current path: "+str(total_path))
+							if len(total_path) < cur_shortest_path_len:
+								cur_shortest_path_len = len(total_path)
+								cur_shortest_path = total_path
+	print("Shortest path: "+str(cur_shortest_path))
 
-		#print("arrowpad_paths_stuff == "+str(arrowpad_paths_stuff))
-		for combination2 in itertools.product(*arrowpad_paths_stuff):
-			#print("combination2 == "+str(combination2))
-			# Join the elements of each combination into a string
-			#path2 = 'A'.join(combination2)
-			path2 = conditional_join(combination2)
-			#path2 = 'A'.join(combination2)
-			#path2 = path2[1:] + "A" # Add the final enter.
-			path2 = path2+"A"
-			print("Here is another possible path: "+str(path2))
 
 	exit(1)
 

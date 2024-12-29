@@ -19,11 +19,30 @@ def test_SHORTEST_PATHS_NUMPAD_KEYS():
 	print(SHORTEST_PATHS_NUMPAD_KEYS)
 	print("Here is the path from A to 7:")
 	print(SHORTEST_PATHS_NUMPAD_KEYS[("A", 7)])
+	print("Here is the path from A to 0:")
+	print(SHORTEST_PATHS_NUMPAD_KEYS[("A", 0)])
+	return
+
+def test_bfs_shortest_paths():
+	# Example test
+
+	grid = [[0,0,0],
+			[0,0,0],
+			[0,0,0],
+			[1,0,0]]
+
+	start_pos = (2,3)
+	end_pos = (1,3)
+	print("Here is the bullshit:")
+	res = bfs_shortest_paths(grid, start_pos, end_pos)
+	print(res)
+	assert res != [] # Should be a path.
 	return
 
 if __name__=="__main__":
 
 	test_shortest_numpad()
 	test_SHORTEST_PATHS_NUMPAD_KEYS()
+	test_bfs_shortest_paths()
 
 	exit(0)

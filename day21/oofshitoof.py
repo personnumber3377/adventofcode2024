@@ -70,8 +70,8 @@ def check_valid_numpad(x,y):
 +---+---+---+
 | 1 | 2 | 3 |
 +---+---+---+
-	 | 0 | A |
-	 +---+---+
+    | 0 | A |
+    +---+---+
 
 '''
 
@@ -79,7 +79,7 @@ def check_valid_numpad(x,y):
 # SHORTEST_PATHS_ARROWPAD_INPUT_KEYS
 # These are basically the shortest ways to input a character to the second arrowpad from the first. The key is the wanted character and the value is the input into the original arrowpad:
 
-SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =	{"<": "<v<A",
+SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =   {"<": "<v<A",
 										"^": "<A",
 										"v": "<vA",
 										">": "vA"}
@@ -87,8 +87,8 @@ SHORTEST_PATHS_ARROWPAD_INPUT_KEYS =	{"<": "<v<A",
 
 '''
 
-	 +---+---+
-	 | ^ | A |
+    +---+---+
+    | ^ | A |
 +---+---+---+
 | < | v | > |
 +---+---+---+
@@ -116,53 +116,6 @@ def keypad_forward(actions, init_pos): # Init pos is the tuple
 					x -= 1
 				case ">":
 					x += 1
-
-'''
-
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		# Determine if 'A' should be used as the join character
-		if ('A' not in s and 
-				(i == 0 or not strings[i-1].endswith('A')) and 
-				(i == len(strings)-1 or not strings[i+1].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-'''
-
-
-
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		if ((not i == 0 and not strings[i].endswith('A')) and (not strings[i].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-
-'''
-def conditional_join(strings):
-	result = []
-	for i, s in enumerate(strings):
-		# Determine if 'A' should be used as the join character
-		# if ('A' in s and 
-		if ((i == 0 or not strings[i-1].endswith('A')) and 
-				(i == len(strings)-1 or not strings[i+1].startswith('A'))):
-			result.append('A' + s)
-		else:
-			result.append(s)
-	return ''.join(result)
-'''
-
-
-# Example usage
-#strings = ['foo', 'barA', 'baz', 'Aqux', 'zooA']
-#joined = conditional_join(strings)
-#print(joined)
-
 
 def get_shortest_path(code) -> str: # Generates the shortest path which types this code.
 	cache = dict() # This is to memoieze the shortest shit such that we do not need to compute it every time.
@@ -203,15 +156,13 @@ def get_shortest_path(code) -> str: # Generates the shortest path which types th
 	for combination in itertools.product(*numpad_path_stuff):
 		# Join the elements of each combination into a string
 		path = 'A'.join(combination)
-		#print("Path: "+str(path))
+		print("Path: "+str(path))
 
 		# So now we need to find out the thing...
 
-		# path_one_layer_up = "A".join(list(path))
-		path_one_layer_up = "".join(list(path))
-
-		path_one_layer_up = "A"+path_one_layer_up+"A" # This must be done because the very first character is "A"
-		#print("Processing this path: "+str(path_one_layer_up))
+		path_one_layer_up = "A".join(list(path))
+		path_one_layer_up = "A"+path_one_layer_up # This must be done because the very first character is "A"
+		print(path_one_layer_up)
 
 		# Ok, so now the thing is done bullshit.
 
@@ -223,35 +174,20 @@ def get_shortest_path(code) -> str: # Generates the shortest path which types th
 			end_key = path_one_layer_up[j+1]
 
 			if start_key == end_key:
-				if start_key != "A":
-
-					# arrowpad_paths_stuff.append(["A"])
-					arrowpad_paths_stuff.append(["A"])
-					continue
-				else:
-					continue
+				arrowpad_paths_stuff.append([])
+				continue
 
 			#if start_key != "A":
 			#	start_key = int(start_key)
 			#if end_key != "A":
 			#	end_key = int(end_key)
-			#print("from : to == "+str(start_key)+", "+str(end_key))
+			print("from : to == "+str(start_key)+", "+str(end_key))
 			# First generate all of the shortest paths in the initial keypad.
 			assert (start_key, end_key) in SHORTEST_PATHS_ARROWPAD_KEYS
 			arrowpad_paths = SHORTEST_PATHS_ARROWPAD_KEYS[(start_key, end_key)]
 			arrowpad_paths_stuff.append(arrowpad_paths)
-			#print("arrowpad_paths == "+str(arrowpad_paths))
+			print("arrowpad_paths == "+str(arrowpad_paths))
 
-		#print("arrowpad_paths_stuff == "+str(arrowpad_paths_stuff))
-		for combination2 in itertools.product(*arrowpad_paths_stuff):
-			#print("combination2 == "+str(combination2))
-			# Join the elements of each combination into a string
-			#path2 = 'A'.join(combination2)
-			path2 = conditional_join(combination2)
-			#path2 = 'A'.join(combination2)
-			#path2 = path2[1:] + "A" # Add the final enter.
-			path2 = path2+"A"
-			print("Here is another possible path: "+str(path2))
 
 	exit(1)
 
